@@ -1,0 +1,168 @@
+/* ═══════════════════════════════════════════════
+   SSP COACH PRO Design System v1
+   大厂级前端UI — 对标 Linear / Vercel / Stripe
+   品牌色: SSP绿 #a0c040 | 深青 #204040 | 金 #c0c060
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* ── SSP Brand ── */
+  --brand-green: #a0c040;
+  --brand-green-light: #b8d45a;
+  --brand-green-dim: rgba(160, 192, 64, 0.12);
+  --brand-green-glow: rgba(160, 192, 64, 0.25);
+  --brand-dark: #1a3030;
+  --brand-deeper: #0f1f1f;
+  --brand-gold: #c0c060;
+
+  /* ── Surface ── */
+  --bg-root: #0a0f0f;
+  --bg-surface: #111818;
+  --bg-surface-raised: #1a2424;
+  --bg-surface-overlay: #1e2a2a;
+  --bg-input: #0d1414;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-brand: rgba(160, 192, 64, 0.30);
+
+  /* ── Text ── */
+  --text-primary: #edf0ef;
+  --text-secondary: #889492;
+  --text-tertiary: #5a6664;
+  --text-brand: #b8d45a;
+  --text-inverse: #0a0f0f;
+
+  /* ── Semantic ── */
+  --ssp-green: #52c41a;
+  --ssp-green-bg: rgba(82, 196, 26, 0.10);
+  --ssp-amber: #f5a623;
+  --ssp-amber-bg: rgba(245, 166, 35, 0.10);
+  --ssp-red: #f43f4e;
+  --ssp-red-bg: rgba(244, 63, 78, 0.10);
+  --ssp-blue: #3b82f6;
+  --ssp-blue-bg: rgba(59, 130, 246, 0.10);
+  --ssp-purple: #8b5cf6;
+  --ssp-purple-bg: rgba(139, 92, 246, 0.10);
+
+  /* ── Spacing ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-green: 0 0 20px rgba(160, 192, 64, 0.15);
+
+  /* ── Typography ── */
+  --font-sans: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+/* ── Global Reset ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-root);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+/* ═════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ═════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ═════════════════════════════════════
+   LOGIN PAGE
+   ═════════════════════════════════════ */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-root);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(160, 192, 64, 0.06), transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(32, 64, 64, 0.15), transparent 50%);
+  pointer-events: none;
+}
+
+.login-card {
+  width: 420px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3xl);
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.login-logo img {
+  width: 40px;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.login-logo span {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}

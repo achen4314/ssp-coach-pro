@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSP COACH PRO — 教练员运动员管理平台</title>
+<style>
+/* ═══════════════════════════════════════════════
+   SSP COACH PRO Design System v1
+   大厂级前端UI — 对标 Linear / Vercel / Stripe
+   品牌色: SSP绿 #a0c040 | 深青 #204040 | 金 #c0c060
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* ── SSP Brand ── */
+  --brand-green: #a0c040;
+  --brand-green-light: #b8d45a;
+  --brand-green-dim: rgba(160,192,64,0.12);
+  --brand-green-glow: rgba(160,192,64,0.25);
+  --brand-dark: #1a3030;
+  --brand-deeper: #0f1f1f;
+  --brand-gold: #c0c060;
+
+  /* ── Surface ── */
+  --bg-root: #0a0f0f;
+  --bg-surface: #111818;
+  --bg-surface-raised: #1a2424;
+  --bg-surface-overlay: #1e2a2a;
+  --bg-input: #0d1414;
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-default: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --border-brand: rgba(160,192,64,0.30);
+
+  /* ── Text ── */
+  --text-primary: #edf0ef;
+  --text-secondary: #889492;
+  --text-tertiary: #5a6664;
+  --text-brand: #b8d45a;
+  --text-inverse: #0a0f0f;
+
+  /* ── Semantic ── */
+  --green: #52c41a;
+  --green-bg: rgba(82,196,26,0.10);
+  --amber: #f5a623;
+  --amber-bg: rgba(245,166,35,0.10);
+  --red: #f43f4e;
+  --red-bg: rgba(244,63,78,0.10);
+  --blue: #3b82f6;
+  --blue-bg: rgba(59,130,246,0.10);
+  --purple: #8b5cf6;
+  --purple-bg: rgba(139,92,246,0.10);
+
+  /* ── Spacing ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  /* ── Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+  --shadow-glow-green: 0 0 20px rgba(160,192,64,0.15);
+
+  /* ── Typography ── */
+  --font-sans: "Inter", "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-lg: 15px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+
+  /* ── Layout ── */
+  --sidebar-w: 220px;
+  --header-h: 52px;
+  --content-max: 1280px;
+
+  /* ── Transitions ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg-root);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  display: flex;
+  overflow: hidden;
+}
+
+/* ═════════════════════════════════════
+   SIDEBAR
+   ═════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.sidebar-brand {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-lg);
+  gap: var(--space-sm);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sidebar-brand .logo-mark {
+  width: 26px; height: 26px;
+  background: var(--brand-green);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: var(--text-inverse);
+  flex-shrink: 0;
+}
+
+.sidebar-brand .logo-text {
+  font-weight: 600; font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-section {
+  margin-bottom: var(--space-md);
+}
+
+.nav-section-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: var(--space-sm) var(--space-md) var(--space-xs);
+}
+
+.nav-item {
+  display: flex; align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  position: relative;
+  user-select: none;
+}
+
+.nav-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--brand-green); background: var(--brand-green-dim); }
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 4px; bottom: 4px;
+  width: 2px; background: var(--brand-green);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg { opacity: 1; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--brand-green);
+  color: var(--text-inverse);
+  font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: var(--radius-full);
+  min-width: 18px; text-align: center;
+}
+
+.sidebar-footer {
+  padding: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; align-items: center; gap: var(--space-md);
+}
+
+.avatar-sm {
+  width: 28px; height: 28px; border-radius: var(--radius-full);
+  background: var(--brand-deeper);
+  border: 1.5px solid var(--brand-green);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; font-size: 11px;
+  flex-shrink: 0;
+}
+
+.user-info { flex:1; min-width:0; }
+.user-name { font-size: var(--text-sm); font-weight: 600; }
+.user-role { font-size: var(--text-xs); color: var(--text-tertiary); }
+
+/* ═════════════════════════════════════
+   MAIN CONTENT
+   ═════════════════════════════════════ */
+.main {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 var(--space-xl);
+  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--space-lg);
+  flex-shrink: 0;
+  background: var(--bg-root);
+}
+
+.header-breadcrumb {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  display: flex; align-items: center; gap: var(--space-sm);
+}
+.header-breadcrumb span.current { color: var(--text-primary); font-weight: 600; }
+
+.header-spacer { flex: 1; }
+
+.search-box {
+  display: flex; align-items: center;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  gap: var(--space-sm);
+  width: 280px;
+  transition: border-color var(--duration-fast);
+}
+.search-box:focus-within { border-color: var(--brand-green); }
+.search-box svg { width: 14px; height: 14px; opacity: 0.5; flex-shrink: 0; }
+.search-box input {
+  flex:1; background:none; border:none; color: var(--text-primary);
+  font-size: var(--text-sm); outline:none;
+}
+.search-box input::placeholder { color: var(--text-tertiary); }
+
+.header-actions { display: flex; align-items: center; gap: var(--space-sm); }
+
+.icon-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-sm); cursor: pointer;
+  border: none; background: none; color: var(--text-secondary);
+  transition: all var(--duration-fast);
+}
+.icon-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm); font-weight: 600;
+  cursor: pointer; border: none;
+  transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--brand-green); color: var(--text-inverse); }
+.btn-primary:hover { background: var(--brand-green-light); box-shadow: var(--shadow-glow-green); }
+.btn-secondary { background: rgba(255,255,255,0.06); color: var(--text-primary); border: 1px solid var(--border-default); }
+.btn-secondary:hover { background: rgba(255,255,255,0.10); border-color: var(--border-strong); }
+.btn-ghost { background: none; color: var(--text-secondary); }
+.btn-ghost:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-2xl);
+  scroll-behavior: smooth;
+}
+
+/* ═════════════════════════════════════
+   STAT CARDS
+   ═════════════════════════════════════ */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--duration-fast), transform var(--duration-fast);
+}
+.stat-card:hover { border-color: var(--border-default); transform: translateY(-1px); }
+.stat-card.accent-green { border-left: 3px solid var(--brand-green); }
+.stat-card.accent-blue  { border-left: 3px solid var(--blue); }
+.stat-card.accent-amber { border-left: 3px solid var(--amber); }
+.stat-card.accent-purple { border-left: 3px solid var(--purple); }
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.stat-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.stat-sub {
+  display: flex; align-items: center; gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+.stat-sub.up { color: var(--green); }
+.stat-sub.down { color: var(--red); }
+
+/* ═════════════════════════════════════
+   PANEL / CARD
+   ═════════════════════════════════════ */
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.panel-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.panel-body { padding: var(--space-xl); }
+.panel-body.no-padding { padding: 0; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-lg); }
+.grid-7-5 { display: grid; grid-template-columns: 7fr 5fr; gap: var(--space-lg); }
+.grid-5-7 { display: grid; grid-template-columns: 5fr 7fr; gap: var(--space-lg); }
+
+.mb-lg { margin-bottom: var(--space-lg); }
+.mb-xl { margin-bottom: var(--space-xl); }
+.mb-2xl { margin-bottom: var(--space-2xl); }
+
+/* ═════════════════════════════════════
+   CONVERSION FUNNEL
+   ═════════════════════════════════════ */
+.funnel {
+  display: flex; flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-lg) 0;
+}
+
+.funnel-stage {
+  display: flex; align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--duration-fast);
+}
+.funnel-stage:hover { background: rgba(255,255,255,0.03); }
+
+.funnel-bar-wrap {
+  flex: 1; height: 36px;
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.funnel-bar {
+  height: 100%;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center;
+  padding-left: var(--space-md);
+  font-size: var(--text-sm); font-weight: 600;
+  transition: width 0.8s var(--ease-in-out);
+}
+
+.funnel-bar.green { background: linear-gradient(90deg, rgba(160,192,64,0.6), rgba(160,192,64,0.3)); }
+.funnel-bar.blue  { background: linear-gradient(90deg, rgba(59,130,246,0.6), rgba(59,130,246,0.3)); }
+.funnel-bar.amber { background: linear-gradient(90deg, rgba(245,166,35,0.6), rgba(245,166,35,0.3)); }
+.funnel-bar.red   { background: linear-gradient(90deg, rgba(244,63,78,0.6), rgba(244,63,78,0.3)); }
+.funnel-bar.purple { background: linear-gradient(90deg, rgba(139,92,246,0.6), rgba(139,92,246,0.3)); }
+
+.funnel-label {
+  width: 110px; font-size: var(--text-sm); font-weight: 500;
+  flex-shrink: 0;
+}
+
+.funnel-count {
+  width: 80px; text-align: right;
+  font-size: var(--text-sm); font-weight: 600;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.funnel-rate {
+  width: 50px; text-align: right;
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ═════════════════════════════════════
+   TARGET AUDIENCE MAP
+   ═════════════════════════════════════ */
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.audience-card {
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: border-color var(--duration-fast);
+  cursor: pointer;
+}
+.audience-card:hover { border-color: var(--border-brand); }
+
+.audience-type {
+  font-size: var(--text-xs); font-weight: 700;
+  padding: 2px 8px; border-radius: var(--radius-full);
+  width: fit-content;
+  letter-spacing: 0.03em;
+}
+
+.type-a { background: var(--brand-green-dim); color: var(--brand-green); }
+.type-b { background: var(--blue-bg); color: var(--blue); }
+.type-c { background: var(--purple-bg); color: var(--purple); }
+.type-d { background: var(--amber-bg); color: var(--amber); }
+.type-e { background: rgba(250,140,22,0.12); color: #fa8c16; }
+.type-f { background: rgba(255,255,255,0.06); color: var(--text-tertiary); }
+
+.audience-name { font-size: var(--text-lg); font-weight: 700; letter-spacing: -0.01em; }
+
+.audience-meta {
+  display: flex; gap: var(--space-xl);
+  font-size: var(--text-xs); color: var(--text-tertiary);
+}
+.audience-meta strong { color: var(--text-primary); font-family: var(--font-mono); }
+
+.audience-bar-wrap {
+  height: 6px; background: var(--bg-input);
+  border-radius: var(--radius-full); overflow: hidden;
+}
+.audience-bar {
+  height: 100%; border-radius: var(--radius-full);
+  transition: width 1s var(--ease-in-out);
+}
+
+/* ═════════════════════════════════════
+   AI ASSISTANT PANEL
+   ═════════════════════════════════════ */
+.ai-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex; flex-direction: column;
+  height: 100%;
+  min-height: 420px;
+}
+
+.ai-header {
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; gap: var(--space-md);
+}
+
+.ai-header-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--brand-green);
+  box-shadow: 0 0 8px var(--brand-green-glow);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 4px var(--brand-green-glow); }
+  50% { box-shadow: 0 0 14px var(--brand-green-glow); }
+}
+
+.ai-model-badge {
+  font-size: 10px; font-weight: 700;
+  background: var(--brand-green-dim);
+  color: var(--brand-green);
+  padding: 2px 8px; border-radius: var(--radius-full);
+  letter-spacing: 0.03em;
+}
+
+.ai-messages {
+  flex: 1; overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex; flex-direction: column; gap: var(--space-md);
+}
+
+.ai-msg {
+  display: flex; gap: var(--space-md);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.ai-msg.assistant { }
+.ai-msg.user { flex-direction: row-reverse; }
+
+.ai-avatar {
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+
+.ai-avatar.bot { background: var(--brand-green-dim); color: var(--brand-green); }
+.ai-avatar.user { background: var(--bg-surface-overlay); color: var(--text-secondary); }
+
+.ai-bubble {
+  background: var(--bg-surface-raised);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  max-width: 85%;
+}
+
+.ai-bubble.user-msg {
+  background: var(--brand-green-dim);
+  border: 1px solid var(--border-brand);
+}
+
+.ai-bubble p { margin-bottom: var(--space-sm); }
+.ai-bubble p:last-child { margin-bottom: 0; }
+
+.ai-highlight {
+  background: rgba(160,192,64,0.15);
+  padding: 2px 6px; border-radius: 3px;
+  font-weight: 600; color: var(--text-brand);
+}
+
+.ai-stat-inline {
+  display: flex; gap: var(--space-lg);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ai-stat-item { font-size: var(--text-xs); color: var(--text-tertiary); }
+.ai-stat-item strong { color: var(--text-primary); }
+
+.ai-input-row {
+  padding: var(--space-md) var(--space-xl);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; gap: var(--space-sm);
+}
+
+.ai-input-row input {
+  flex: 1; background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  outline: none;
+}
+.ai-input-row input:focus { border-color: var(--brand-green); }
+.ai-input-row input::placeholder { color: var(--text-tertiary); }
+
+/* ═════════════════════════════════════
+   ATHLETE TABLE
+   ═════════════════════════════════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.data-table th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.data-table td {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.type-tag {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: var(--radius-full);
+  letter-spacing: 0.03em;
+}
+
+.score-cell {
+  display: flex; align-items: center; gap: var(--space-sm);
+}
+
+.mini-bar {
+  width: 60px; height: 4px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.mini-bar-fill {
+  height: 100%; border-radius: var(--radius-full);
+}
+.mini-bar-fill.high { background: var(--green); }
+.mini-bar-fill.mid { background: var(--amber); }
+.mini-bar-fill.low { background: var(--red); }
+
+.score-num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+.score-num.high { color: var(--green); }
+.score-num.mid { color: var(--amber); }
+.score-num.low { color: var(--red); }
+
+.progress-ring {
+  width: 36px; height: 36px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.progress-ring svg { width: 36px; height: 36px; transform: rotate(-90deg); }
+.progress-ring .bg-circle {
+  fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 3;
+}
+.progress-ring .fg-circle {
+  fill: none; stroke: var(--brand-green); stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s var(--ease-in-out);
+}
+.progress-ring .ring-text {
+  position: absolute;
+  font-size: 9px; font-weight: 700; color: var(--text-primary);
+}
+
+/* ═════════════════════════════════════
+   TABS WITHIN PANEL
+   ═════════════════════════════════════ */
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: var(--space-md) var(--space-xl) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab {
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--text-sm); font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--duration-fast);
+}
+.tab:hover { color: var(--text-secondary); }
+.tab.active { color: var(--brand-green); border-bottom-color: var(--brand-green); }
+
+/* ═════════════════════════════════════
+   SCROLLBAR
+   ═════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+/* ═════════════════════════════════════
+   RESPONSIVE HINT
+   ═════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-7-5, .grid-5-7 { grid-template-columns: 1fr; }
+  .audience-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ═════════════════════════════════════
+   INTERACTION DEMO TOGGLE
+   ═════════════════════════════════════ */
+.demo-tabs-nav {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  border: 1px solid var(--border-subtle);
+}
+
+.demo-tab-btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs); font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  transition: all var(--duration-fast);
+}
+.demo-tab-btn.active {
+  background: var(--bg-surface-overlay);
+  color: var(--text-primary);
+}
+
+/* ═════════════════════════════════════
+   TREEMAP STYLE (Target Audience)
+   ═════════════════════════════════════ */
+.treemap-viz {
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr;
+  grid-template-rows: 2fr 1.5fr 1fr;
+  gap: 4px;
+  height: 280px;
+}
+
+.treemap-cell {
+  border-radius: var(--radius-md);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: var(--space-lg);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: filter var(--duration-fast);
+}
+.treemap-cell:hover { filter: brightness(1.15); }
+
+.treemap-cell.cell-a { background: linear-gradient(135deg, #1a3020, #2a4a30); grid-row: span 2; }
+.treemap-cell.cell-b { background: linear-gradient(135deg, #1a2535, #1e3050); }
+.treemap-cell.cell-c { background: linear-gradient(135deg, #1e1a30, #2a2040); }
+.treemap-cell.cell-d { background: linear-gradient(135deg, #251f15, #352a18); }
+.treemap-cell.cell-e { background: linear-gradient(135deg, #1a1a1a, #252525); }
+.treemap-cell.cell-f { background: linear-gradient(135deg, #141414, #1a1a1a); }
+
+.treemap-label { font-size: var(--text-xs); color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.05em; }
+.treemap-value { font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.02em; }
+.treemap-pct { font-size: var(--text-xs); color: rgba(255,255,255,0.5); }
+.treemap-cell.cell-a .treemap-value { color: var(--brand-green); }
+.treemap-cell.cell-b .treemap-value { color: var(--blue); }
+.treemap-cell.cell-c .treemap-value { color: var(--purple); }
+.treemap-cell.cell-d .treemap-value { color: var(--amber); }
+
+/* Active screen switching */
+.screen { display: none; }
+.screen.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+     ═══════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-mark">SSP</div>
+    <div class="logo-text">COACH PRO</div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-label">主菜单</div>
+      <a class="nav-item active" onclick="switchScreen('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        工作台
+        <span class="nav-badge">5</span>
+      </a>
+      <a class="nav-item" onclick="switchScreen('pipeline')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        销售漏斗
+      </a>
+      <a class="nav-item" onclick="switchScreen('athletes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+        学员管理
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">工具</div>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+        新建评估
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        训练计划
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        报告中心
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">智能</div>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+        AI 教练助手
+        <span style="font-size:9px;margin-left:auto;background:var(--brand-green-dim);color:var(--brand-green);padding:1px 6px;border-radius:99px;">DeepSeek</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar-sm">李</div>
+    <div class="user-info">
+      <div class="user-name">李教练</div>
+      <div class="user-role">高级教练 · SSP</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT AREA
+     ═══════════════════════════════════════ -->
+<main class="main">
+  <header class="header">
+    <div class="header-breadcrumb">
+      <span class="current">工作台</span>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="搜索学员、评估、计划... (⌘K)">
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" title="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button class="btn btn-primary">+ 新建评估</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ═══════════════════════════════════
+         SCREEN: DASHBOARD
+         ═══════════════════════════════════ -->
+    <div id="screen-dashboard" class="screen active">
+
+      <!-- ── Demo View Toggle ── -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:var(--space-xl);">
+        <div class="demo-tabs-nav">
+          <button class="demo-tab-btn active" onclick="switchDashboardView('all')">总览</button>
+          <button class="demo-tab-btn" onclick="switchDashboardView('funnel')">成单率分析</button>
+          <button class="demo-tab-btn" onclick="switchDashboardView('audience')">目标人群</button>
+        </div>
+      </div>
+
+      <!-- ── View: ALL ── -->
+      <div id="dash-all" class="dash-view active">
+
+        <!-- Stat Cards Row -->
+        <div class="stats-row">
+          <div class="stat-card accent-green">
+            <div class="stat-label">总学员数</div>
+            <div class="stat-value">32</div>
+            <div class="stat-sub up">↑ 3 本月新增</div>
+          </div>
+          <div class="stat-card accent-blue">
+            <div class="stat-label">本月评估</div>
+            <div class="stat-value">18<span style="font-size:14px;color:var(--text-tertiary);">/25</span></div>
+            <div class="stat-sub up">完成率 72%</div>
+          </div>
+          <div class="stat-card accent-amber">
+            <div class="stat-label">待跟进学员</div>
+            <div class="stat-value">5</div>
+            <div class="stat-sub down">含 2 逾期</div>
+          </div>
+          <div class="stat-card accent-purple">
+            <div class="stat-label">本月成交率</div>
+            <div class="stat-value" style="color:var(--brand-green);">28<span style="font-size:14px;">%</span></div>
+            <div class="stat-sub up">↑ 5% vs 上月</div>
+          </div>
+        </div>
+
+        <!-- Dual Panel: Funnel + Audience -->
+        <div class="grid-7-5 mb-xl">
+          <!-- Conversion Funnel Mini -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">📊 本月销售漏斗</div>
+              <button class="btn btn-ghost" style="font-size:var(--text-xs);" onclick="switchDashboardView('funnel')">查看详情 →</button>
+            </div>
+            <div class="panel-body">
+              <div class="funnel">
+                <div class="funnel-stage">
+                  <span class="funnel-label">👥 总体验客户</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar green" style="width:100%;">25 人</div></div>
+                  <span class="funnel-count" style="color:var(--brand-green);">25</span>
+                  <span class="funnel-rate">100%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">📋 完成评估</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar blue" style="width:72%;">18 人</div></div>
+                  <span class="funnel-count" style="color:var(--blue);">18</span>
+                  <span class="funnel-rate">72%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">🎯 高意向客户</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar amber" style="width:48%;">12 人</div></div>
+                  <span class="funnel-count" style="color:var(--amber);">12</span>
+                  <span class="funnel-rate">48%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">💳 购买产品</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar purple" style="width:28%;">7 人</div></div>
+                  <span class="funnel-count" style="color:var(--purple);">7</span>
+                  <span class="funnel-rate">28%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Target Audience Map Mini -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🎯 目标人群分布</div>
+              <button class="btn btn-ghost" style="font-size:var(--text-xs);" onclick="switchDashboardView('audience')">查看详情 →</button>
+            </div>
+            <div class="panel-body no-padding">
+              <div class="treemap-viz">
+                <div class="treemap-cell cell-a">
+                  <div class="treemap-label">A · HYROX备赛</div>
+                  <div class="treemap-value">8</div>
+                  <div class="treemap-pct">25% · 转化率 63%</div>
+                </div>
+                <div class="treemap-cell cell-b">
+                  <div class="treemap-label">B · 兴趣观望</div>
+                  <div class="treemap-value">10</div>
+                  <div class="treemap-pct">31% · 转化率 30%</div>
+                </div>
+                <div class="treemap-cell cell-c">
+                  <div class="treemap-label">C · 减脂塑形</div>
+                  <div class="treemap-value">4</div>
+                  <div class="treemap-pct">13% · 转化率 50%</div>
+                </div>
+                <div class="treemap-cell cell-d">
+                  <div class="treemap-label">D · 专项提升</div>
+                  <div class="treemap-value">4</div>
+                  <div class="treemap-pct">13% · 转化率 75%</div>
+                </div>
+                <div class="treemap-cell cell-e">
+                  <div class="treemap-label">E · 低频体验</div>
+                  <div class="treemap-value">3</div>
+                  <div class="treemap-pct">9%</div>
+                </div>
+                <div class="treemap-cell cell-f">
+                  <div class="treemap-label">F · 低意向</div>
+                  <div class="treemap-value">3</div>
+                  <div class="treemap-pct">9%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Athletes + AI -->
+        <div class="grid-7-5">
+          <!-- Recent Athletes Table -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">📋 最近评估学员</div>
+              <button class="btn btn-ghost" style="font-size:var(--text-xs);">查看全部 →</button>
+            </div>
+            <div class="panel-body no-padding">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>学员</th>
+                    <th>类型</th>
+                    <th>总分</th>
+                    <th>短板</th>
+                    <th>跟进状态</th>
+                    <th>评估日期</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:600;color:var(--text-primary);">张三</td>
+                    <td><span class="type-tag type-a">A类</span></td>
+                    <td>
+                      <div class="score-cell">
+                        <div class="mini-bar"><div class="mini-bar-fill high" style="width:76%;"></div></div>
+                        <span class="score-num high">38</span>
+                      </div>
+                    </td>
+                    <td style="color:var(--amber);">跑步·心肺</td>
+                    <td><span style="color:var(--green);">● 已购备赛营</span></td>
+                    <td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-20</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;color:var(--text-primary);">李四</td>
+                    <td><span class="type-tag type-b">B类</span></td>
+                    <td>
+                      <div class="score-cell">
+                        <div class="mini-bar"><div class="mini-bar-fill mid" style="width:56%;"></div></div>
+                        <span class="score-num mid">28</span>
+                      </div>
+                    </td>
+                    <td style="color:var(--amber);">下肢力量</td>
+                    <td><span style="color:var(--blue);">● 待基础测试</span></td>
+                    <td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-20</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;color:var(--text-primary);">王五</td>
+                    <td><span class="type-tag type-c">C类</span></td>
+                    <td>
+                      <div class="score-cell">
+                        <div class="mini-bar"><div class="mini-bar-fill low" style="width:34%;"></div></div>
+                        <span class="score-num low">17</span>
+                      </div>
+                    </td>
+                    <td style="color:var(--red);">心肺·抗疲劳</td>
+                    <td><span style="color:var(--red);">● 需24h跟进</span></td>
+                    <td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-18</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;color:var(--text-primary);">赵六</td>
+                    <td><span class="type-tag type-d">D类</span></td>
+                    <td>
+                      <div class="score-cell">
+                        <div class="mini-bar"><div class="mini-bar-fill high" style="width:82%;"></div></div>
+                        <span class="score-num high">41</span>
+                      </div>
+                    </td>
+                    <td style="color:var(--green);">核心稳定性</td>
+                    <td><span style="color:var(--green);">● 已付私教</span></td>
+                    <td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-15</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- AI Assistant -->
+          <div class="ai-panel">
+            <div class="ai-header">
+              <div class="ai-header-dot"></div>
+              <div class="panel-title">🤖 AI 教练助手</div>
+              <div class="ai-model-badge">DeepSeek V4 Pro</div>
+            </div>
+            <div class="ai-messages">
+              <div class="ai-msg assistant">
+                <div class="ai-avatar bot">AI</div>
+                <div class="ai-bubble">
+                  <p>李教练，下午好！基于你最近的评估数据，我注意到几个值得关注的趋势：</p>
+                  <p>📊 <span class="ai-highlight">B类（兴趣观望型）学员占比31%</span>，但转化率仅30%。他们最大的共性是<span class="ai-highlight">跑步能力与心肺耐力</span>评分均低于3分。</p>
+                  <p>💡 建议：对B类学员优先推荐 HYROX基础测试（¥299），先建立数据信心，再推进备赛营。</p>
+                  <p>🎯 重点关注 <span class="ai-highlight">王五</span> — 评估已过72h未跟进，逾期风险高。</p>
+                </div>
+              </div>
+              <div class="ai-msg assistant">
+                <div class="ai-avatar bot">AI</div>
+                <div class="ai-bubble">
+                  <p>📈 <strong>本周成单率预测</strong></p>
+                  <div class="ai-stat-inline">
+                    <div class="ai-stat-item">高意向待成交<br><strong style="color:var(--brand-green);">3 人</strong></div>
+                    <div class="ai-stat-item">预计本周成交<br><strong style="color:var(--blue);">1-2 人</strong></div>
+                    <div class="ai-stat-item">最可能成交<br><strong>赵六 (D类)</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ai-input-row">
+              <input type="text" placeholder="询问AI助手... 如: 分析B类学员的转化瓶颈">
+              <button class="btn btn-primary" style="padding:var(--space-sm) var(--space-md);">发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: FUNNEL ── -->
+      <div id="dash-funnel" class="dash-view" style="display:none;">
+        <div class="mb-xl">
+          <h2 style="font-size:var(--text-xl);font-weight:700;margin-bottom:var(--space-sm);">📊 成单率深度分析</h2>
+          <p style="font-size:var(--text-sm);color:var(--text-tertiary);">从体验 → 评估 → 购买，追踪每一步转化效率</p>
+        </div>
+
+        <!-- Conversion Funnel Detail -->
+        <div class="grid-2 mb-xl">
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">销售漏斗 · 本月</div></div>
+            <div class="panel-body">
+              <div class="funnel">
+                <div class="funnel-stage">
+                  <span class="funnel-label">👥 总体验客户</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar green" style="width:100%;">25 人</div></div>
+                  <span class="funnel-count" style="color:var(--brand-green);">25</span>
+                  <span class="funnel-rate">—</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">📋 完成评估</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar blue" style="width:72%;">18 人</div></div>
+                  <span class="funnel-count" style="color:var(--blue);">18</span>
+                  <span class="funnel-rate" style="color:var(--text-tertiary);">72%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">🎯 高意向客户</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar amber" style="width:48%;">12 人</div></div>
+                  <span class="funnel-count" style="color:var(--amber);">12</span>
+                  <span class="funnel-rate" style="color:var(--text-tertiary);">48%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">💳 购买产品</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar purple" style="width:28%;">7 人</div></div>
+                  <span class="funnel-count" style="color:var(--purple);">7</span>
+                  <span class="funnel-rate" style="color:var(--text-tertiary);">28%</span>
+                </div>
+                <div class="funnel-stage">
+                  <span class="funnel-label">🔄 续费/升级</span>
+                  <div class="funnel-bar-wrap"><div class="funnel-bar red" style="width:12%;">3 人</div></div>
+                  <span class="funnel-count" style="color:var(--red);">3</span>
+                  <span class="funnel-rate" style="color:var(--text-tertiary);">12%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Funnel by Source -->
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">来源渠道转化对比</div></div>
+            <div class="panel-body">
+              <table class="data-table">
+                <thead><tr><th>来源</th><th>体验</th><th>评估</th><th>成交</th><th>转化率</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:600;">老会员转介绍</td>
+                    <td style="font-family:var(--font-mono);">8</td><td style="font-family:var(--font-mono);">8</td><td style="font-family:var(--font-mono);">5</td>
+                    <td><span style="color:var(--green);font-weight:700;">62.5%</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">社群</td>
+                    <td style="font-family:var(--font-mono);">7</td><td style="font-family:var(--font-mono);">6</td><td style="font-family:var(--font-mono);">2</td>
+                    <td><span style="color:var(--amber);font-weight:700;">28.6%</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">大众点评</td>
+                    <td style="font-family:var(--font-mono);">6</td><td style="font-family:var(--font-mono);">3</td><td style="font-family:var(--font-mono);">0</td>
+                    <td><span style="color:var(--red);font-weight:700;">0%</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">小红书</td>
+                    <td style="font-family:var(--font-mono);">3</td><td style="font-family:var(--font-mono);">1</td><td style="font-family:var(--font-mono);">0</td>
+                    <td><span style="color:var(--red);font-weight:700;">0%</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">其他</td>
+                    <td style="font-family:var(--font-mono);">1</td><td style="font-family:var(--font-mono);">0</td><td style="font-family:var(--font-mono);">0</td>
+                    <td><span style="color:var(--red);font-weight:700;">0%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="margin-top:var(--space-md);padding:var(--space-md);background:var(--brand-green-dim);border-radius:var(--radius-md);font-size:var(--text-xs);color:var(--text-secondary);">
+                💡 <strong style="color:var(--brand-green);">老会员转介绍</strong>是最高转化渠道（62.5%），建议加强转介绍激励机制。<br>
+                ⚠️ <strong style="color:var(--red);">大众点评</strong>体验→评估流失率50%，需优化体验课后的即时跟进流程。
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Performance -->
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">产品成交分布</div></div>
+          <div class="panel-body">
+            <div style="display:flex;gap:var(--space-xl);">
+              <div style="flex:1;padding:var(--space-lg);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--brand-green);">
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;">HYROX 基础测试 ¥299</div>
+                <div style="font-size:var(--text-2xl);font-weight:700;margin:var(--space-sm) 0;">4</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">本月售出 · 转化率 57%</div>
+              </div>
+              <div style="flex:1;padding:var(--space-lg);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--blue);">
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;">12周备赛营</div>
+                <div style="font-size:var(--text-2xl);font-weight:700;margin:var(--space-sm) 0;">2</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">本月售出 · 客单最高</div>
+              </div>
+              <div style="flex:1;padding:var(--space-lg);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--purple);">
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;">团课月卡/季卡</div>
+                <div style="font-size:var(--text-2xl);font-weight:700;margin:var(--space-sm) 0;">1</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">本月售出 · 复购潜力大</div>
+              </div>
+              <div style="flex:1;padding:var(--space-lg);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--amber);">
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.05em;">专项私教 10次卡</div>
+                <div style="font-size:var(--text-2xl);font-weight:700;margin:var(--space-sm) 0;">1</div>
+                <div style="font-size:var(--text-xs);color:var(--text-tertiary);">本月售出 · 转化率 75%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: AUDIENCE ── -->
+      <div id="dash-audience" class="dash-view" style="display:none;">
+        <div class="mb-xl">
+          <h2 style="font-size:var(--text-xl);font-weight:700;margin-bottom:var(--space-sm);">🎯 目标人群深度画像</h2>
+          <p style="font-size:var(--text-sm);color:var(--text-tertiary);">A-F六大客户类型，清晰定位每类人群特征与转化策略</p>
+        </div>
+
+        <div class="audience-grid mb-xl">
+          <div class="audience-card">
+            <span class="audience-type type-a">A 类</span>
+            <div class="audience-name">HYROX 明确备赛型</div>
+            <div class="audience-meta">
+              <span>人数 <strong>8</strong></span>
+              <span>占比 <strong>25%</strong></span>
+              <span>转化率 <strong style="color:var(--brand-green);">63%</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:63%;background:var(--brand-green);"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">高意向 · 有参赛计划 · 愿系统训练 · 推荐备赛营+私教</div>
+          </div>
+          <div class="audience-card">
+            <span class="audience-type type-b">B 类</span>
+            <div class="audience-name">HYROX 兴趣观望型</div>
+            <div class="audience-meta">
+              <span>人数 <strong>10</strong></span>
+              <span>占比 <strong>31%</strong></span>
+              <span>转化率 <strong style="color:var(--blue);">30%</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:30%;background:var(--blue);"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">最大群体 · 需数据建立信心 · 推荐基础测试+团课入门</div>
+          </div>
+          <div class="audience-card">
+            <span class="audience-type type-c">C 类</span>
+            <div class="audience-name">零基础减脂塑形型</div>
+            <div class="audience-meta">
+              <span>人数 <strong>4</strong></span>
+              <span>占比 <strong>13%</strong></span>
+              <span>转化率 <strong style="color:var(--purple);">50%</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:50%;background:var(--purple);"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">目标偏减脂 · 不急于参赛 · 推荐团课月卡/燃脂营</div>
+          </div>
+          <div class="audience-card">
+            <span class="audience-type type-d">D 类</span>
+            <div class="audience-name">专项表现提升型</div>
+            <div class="audience-meta">
+              <span>人数 <strong>4</strong></span>
+              <span>占比 <strong>13%</strong></span>
+              <span>转化率 <strong style="color:var(--amber);">75%</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:75%;background:var(--amber);"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">转化率最高 · 有专项需求 · 推荐运动表现筛查+私教</div>
+          </div>
+          <div class="audience-card">
+            <span class="audience-type type-e">E 类</span>
+            <div class="audience-name">低频体验型</div>
+            <div class="audience-meta">
+              <span>人数 <strong>3</strong></span>
+              <span>占比 <strong>9%</strong></span>
+              <span>转化率 <strong style="color:#fa8c16;">—</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:11%;background:#fa8c16;"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">距离远/时间少 · 推荐测试日/周末课/低频课包</div>
+          </div>
+          <div class="audience-card">
+            <span class="audience-type type-f">F 类</span>
+            <div class="audience-name">低意向客户</div>
+            <div class="audience-meta">
+              <span>人数 <strong>3</strong></span>
+              <span>占比 <strong>9%</strong></span>
+              <span>转化率 <strong style="color:var(--text-tertiary);">—</strong></span>
+            </div>
+            <div class="audience-bar-wrap"><div class="audience-bar" style="width:4%;background:var(--text-tertiary);"></div></div>
+            <div style="font-size:var(--text-xs);color:var(--text-tertiary);">仅体验 · 价格敏感 · 暂不重点跟进</div>
+          </div>
+        </div>
+
+        <!-- Audience Insight AI -->
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">🤖 AI 人群洞察</div></div>
+          <div class="panel-body">
+            <div class="ai-msg assistant" style="display:flex;">
+              <div class="ai-avatar bot">AI</div>
+              <div class="ai-bubble">
+                <p>基于你的学员数据，以下是关键人群洞察：</p>
+                <p>🔑 <span class="ai-highlight">B类（31%）是你最大的流量池</span>，但转化率仅30%。核心瓶颈：71%的B类学员在评估后未在48h内收到跟进。</p>
+                <p>📈 <span class="ai-highlight">D类转化率75%</span>但仅占13%。建议：在评估流程中对有专项运动背景的学员增加D类筛查问题，提前识别潜力客户。</p>
+                <p>⚠️ <span class="ai-highlight">大众点评来源的A类学员</span>评估率仅50%（3/6），可能是在体验课环节流失。建议优化大众点评团课描述，明确HYROX备赛价值。</p>
+                <p>💡 建议设置<strong>自动跟进提醒</strong>：评估完成后2h内发送微信消息，24h内电话跟进，可提升B类转化率预估至40-45%。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: PIPELINE ── -->
+      <div id="dash-pipeline" class="dash-view" style="display:none;">
+        <div class="mb-xl">
+          <h2 style="font-size:var(--text-xl);font-weight:700;margin-bottom:var(--space-sm);">📊 销售漏斗看板</h2>
+          <p style="font-size:var(--text-sm);color:var(--text-tertiary);">拖拽学员卡片管理跟进状态</p>
+        </div>
+        <div style="display:flex;gap:var(--space-lg);overflow-x:auto;padding-bottom:var(--space-lg);">
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-a">A类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertiary);">8人</span></div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:var(--space-sm);min-height:200px;">
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--brand-green);font-size:var(--text-sm);">张三<br><span style="color:var(--text-tertiary);font-size:var(--text-xs);">已报备赛营 · 6/18</span></div>
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--brand-green);font-size:var(--text-sm);">刘七<br><span style="color:var(--text-tertiary);font-size:var(--text-xs);">备赛营中 · 6/1</span></div>
+            </div>
+          </div>
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-b">B类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertiary);">10人</span></div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:var(--space-sm);min-height:200px;">
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--blue);font-size:var(--text-sm);">李四<br><span style="color:var(--text-tertiary);font-size:var(--text-xs);">待基础测试 · 6/20</span></div>
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--red);font-size:var(--text-sm);">周八<br><span style="color:var(--red);font-size:var(--text-xs);">⚠ 逾期跟进 · 6/12</span></div>
+            </div>
+          </div>
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-c">C类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertiary);">4人</span></div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:var(--space-sm);min-height:200px;">
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--purple);font-size:var(--text-sm);">王五<br><span style="color:var(--text-tertiary);font-size:var(--text-xs);">月卡已购 · 6/15</span></div>
+            </div>
+          </div>
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-d">D类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertiary);">4人</span></div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:var(--space-sm);min-height:200px;">
+              <div style="padding:var(--space-md);background:var(--bg-surface-raised);border-radius:var(--radius-md);border-left:3px solid var(--amber);font-size:var(--text-sm);">赵六<br><span style="color:var(--text-tertiary);font-size:var(--text-xs);">已付私教 · 6/10</span></div>
+            </div>
+          </div>
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-e">E类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertriary);">3人</span></div>
+            <div class="panel-body" style="min-height:200px;"></div>
+          </div>
+          <div class="panel" style="min-width:240px;flex:1;">
+            <div class="panel-header"><span class="type-tag type-f">F类</span> <span style="margin-left:auto;font-family:var(--font-mono);color:var(--text-tertiary);">3人</span></div>
+            <div class="panel-body" style="min-height:200px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── View: ATHLETES ── -->
+      <div id="dash-athletes" class="dash-view" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-xl);">
+          <div>
+            <h2 style="font-size:var(--text-xl);font-weight:700;">👥 学员管理</h2>
+            <p style="font-size:var(--text-sm);color:var(--text-tertiary);">管理所有学员档案与评估记录</p>
+          </div>
+          <button class="btn btn-primary">+ 添加学员</button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div style="display:flex;gap:var(--space-md);margin-bottom:var(--space-lg);flex-wrap:wrap;">
+          <select style="background:var(--bg-input);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);color:var(--text-primary);font-size:var(--text-sm);">
+            <option>全部类型</option><option>A类</option><option>B类</option><option>C类</option><option>D类</option><option>E类</option><option>F类</option>
+          </select>
+          <select style="background:var(--bg-input);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);color:var(--text-primary);font-size:var(--text-sm);">
+            <option>全部来源</option><option>大众点评</option><option>社群</option><option>老会员转介绍</option><option>小红书</option>
+          </select>
+          <select style="background:var(--bg-input);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:var(--space-sm) var(--space-md);color:var(--text-primary);font-size:var(--text-sm);">
+            <option>全部教练</option><option>李教练</option><option>王教练</option><option>陈教练</option>
+          </select>
+          <button class="btn btn-secondary">筛选</button>
+          <button class="btn btn-ghost" style="font-size:var(--text-xs);">清除筛选</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-body no-padding">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox"></th>
+                  <th>学员</th>
+                  <th>类型</th>
+                  <th>来源</th>
+                  <th>总分</th>
+                  <th>教练</th>
+                  <th>状态</th>
+                  <th>最近评估</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><input type="checkbox"></td><td style="font-weight:600;color:var(--text-primary);">张三<span style="display:block;font-size:var(--text-xs);color:var(--text-tertiary);">男 · 28岁 · 有健身基础</span></td><td><span class="type-tag type-a">A类</span></td><td style="font-size:var(--text-xs);">老会员转介绍</td><td><span class="score-num high">38/50</span></td><td>李教练</td><td><span style="color:var(--green);">● 备赛营中</span></td><td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-20</td><td><button class="btn btn-ghost" style="font-size:var(--text-xs);padding:2px 8px;">查看</button></td></tr>
+                <tr><td><input type="checkbox"></td><td style="font-weight:600;color:var(--text-primary);">李四<span style="display:block;font-size:var(--text-xs);color:var(--text-tertiary);">女 · 32岁 · 有跑步基础</span></td><td><span class="type-tag type-b">B类</span></td><td style="font-size:var(--text-xs);">社群</td><td><span class="score-num mid">28/50</span></td><td>李教练</td><td><span style="color:var(--blue);">● 待基础测试</span></td><td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-20</td><td><button class="btn btn-ghost" style="font-size:var(--text-xs);padding:2px 8px;">查看</button></td></tr>
+                <tr><td><input type="checkbox"></td><td style="font-weight:600;color:var(--text-primary);">王五<span style="display:block;font-size:var(--text-xs);color:var(--text-tertiary);">女 · 25岁 · 零基础</span></td><td><span class="type-tag type-c">C类</span></td><td style="font-size:var(--text-xs);">大众点评</td><td><span class="score-num low">17/50</span></td><td>李教练</td><td><span style="color:var(--red);">● 需跟进</span></td><td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-18</td><td><button class="btn btn-ghost" style="font-size:var(--text-xs);padding:2px 8px;">查看</button></td></tr>
+                <tr><td><input type="checkbox"></td><td style="font-weight:600;color:var(--text-primary);">赵六<span style="display:block;font-size:var(--text-xs);color:var(--text-tertiary);">男 · 35岁 · 有专项基础</span></td><td><span class="type-tag type-d">D类</span></td><td style="font-size:var(--text-xs);">老会员转介绍</td><td><span class="score-num high">41/50</span></td><td>王教练</td><td><span style="color:var(--green);">● 私教中</span></td><td style="font-family:var(--font-mono);color:var(--text-tertiary);">06-15</td><td><button class="btn btn-ghost" style="font-size:var(--text-xs);padding:2px 8px;">查看</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:var(--space-lg);display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border-subtle);font-size:var(--text-xs);color:var(--text-tertiary);">
+            <span>共 32 条记录</span>
+            <div style="display:flex;gap:4px;">
+              <button class="btn btn-secondary" style="font-size:var(--text-xs);padding:4px 8px;" disabled>上一页</button>
+              <button class="btn btn-secondary" style="font-size:var(--text-xs);padding:4px 8px;background:var(--brand-green-dim);color:var(--brand-green);">1</button>
+              <button class="btn btn-secondary" style="font-size:var(--text-xs);padding:4px 8px;">2</button>
+              <button class="btn btn-secondary" style="font-size:var(--text-xs);padding:4px 8px;">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* ═════════════════════════════════════
+   SCREEN SWITCHING
+   ═════════════════════════════════════ */
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + name);
+  if (target) {
+    target.classList.add('active');
+    document.querySelector('.header-breadcrumb .current').textContent =
+      name === 'dashboard' ? '工作台' :
+      name === 'pipeline' ? '销售漏斗' :
+      name === 'athletes' ? '学员管理' : '';
+  }
+
+  // Update sidebar active
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const items = document.querySelectorAll('.nav-item');
+  const idx = name === 'dashboard' ? 0 : name === 'pipeline' ? 1 : name === 'athletes' ? 2 : -1;
+  if (idx >= 0) items[idx].classList.add('active');
+}
+
+/* ═════════════════════════════════════
+   DASHBOARD VIEW SWITCHING
+   ═════════════════════════════════════ */
+function switchDashboardView(view) {
+  // Toggle demo tabs
+  document.querySelectorAll('.demo-tab-btn').forEach(b => b.classList.remove('active'));
+  const buttons = document.querySelectorAll('.demo-tab-btn');
+  if (view === 'all') buttons[0].classList.add('active');
+  else if (view === 'funnel') buttons[1].classList.add('active');
+  else if (view === 'audience') buttons[2].classList.add('active');
+
+  // Show/hide views
+  document.querySelectorAll('.dash-view').forEach(v => v.style.display = 'none');
+  const target = document.getElementById('dash-' + view);
+  if (target) target.style.display = 'block';
+}
+
+// Init: hide non-default dash views
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.dash-view').forEach(v => {
+    if (v.id !== 'dash-all') v.style.display = 'none';
+  });
+});
+</script>
+
+</body>
+</html>

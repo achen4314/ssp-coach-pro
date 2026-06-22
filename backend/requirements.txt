@@ -1,0 +1,12 @@
+flask==3.1.0
+flask-sqlalchemy==3.1.1
+flask-cors==5.0.0
+flask-jwt-extended==4.6.0
+python-dotenv==1.0.1
+gunicorn==22.0.0
+psycopg2-binary==2.9.10
+openai==1.58.1
+alembic==1.14.0
+flask-migrate==4.0.7
+weasyprint==62.3
+pydantic==2.10.0
