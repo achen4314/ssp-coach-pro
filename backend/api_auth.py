@@ -14,6 +14,29 @@ from models import db, User, Coach
 api_auth_bp = Blueprint("api_auth", __name__, url_prefix="/api/v1/auth")
 
 
+def _auto_seed_users():
+    """安全网：数据库为空时自动创建默认用户"""
+    try:
+        from models import Coach
+        admin = User(username="admin", role="admin", display_name="总教练")
+        admin.set_password("admin123")
+        db.session.add(admin); db.session.flush()
+        db.session.add(Coach(user_id=admin.id, title="总教练"))
+        for uname, pwd, dname, title in [
+            ("coach1", "coach123", "李教练", "高级教练"),
+            ("coach2", "coach123", "王教练", "金牌教练"),
+        ]:
+            u = User(username=uname, role="coach", display_name=dname)
+            u.set_password(pwd)
+            db.session.add(u); db.session.flush()
+            db.session.add(Coach(user_id=u.id, title=title))
+        db.session.commit()
+        print("[auto_seed] Created default users")
+    except Exception as e:
+        db.session.rollback()
+        print(f"[auto_seed] Failed: {e}")
+
+
 # ────────────────────────── POST /login ──────────────────────────
 @api_auth_bp.route("/login", methods=["POST"])
 def login():
@@ -26,6 +49,11 @@ def login():
         return jsonify({"error": "请输入用户名和密码"}), 400
 
     user: User = User.query.filter_by(username=username).first()
+    if user is None or not user.check_password(password):
+        # 安全网：如果数据库是全新的（无任何用户），自动播种后重试
+        if User.query.count() == 0:
+            _auto_seed_users()
+            user = User.query.filter_by(username=username).first()
     if user is None or not user.check_password(password):
         return jsonify({"error": "用户名或密码错误"}), 401
 

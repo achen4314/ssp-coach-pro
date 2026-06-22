@@ -27,8 +27,21 @@ def _ensure_db(app_obj) -> None:
         return
     try:
         db.create_all()
-        from models import ProductCatalog, User, Coach
+    except Exception as e:
+        print(f"[_ensure_db] create_all failed: {e}")
+        return
+
+    from models import ProductCatalog, User, Coach
+    import traceback
+
+    # 每步独立 try，一个失败不影响其他
+    try:
         ProductCatalog.seed_defaults()
+    except Exception as e:
+        print(f"[_ensure_db] ProductCatalog seed failed: {e}")
+
+    # Admin
+    try:
         if not User.query.filter_by(username="admin").first():
             admin = User(username="admin", role="admin", display_name="总教练")
             admin.set_password("admin123")
@@ -36,11 +49,18 @@ def _ensure_db(app_obj) -> None:
             db.session.flush()
             if not Coach.query.filter_by(user_id=admin.id).first():
                 db.session.add(Coach(user_id=admin.id, title="总教练"))
-        # Always ensure demo coaches exist
-        for uname, pwd, dname, title in [
-            ("coach1", "coach123", "李教练", "高级教练"),
-            ("coach2", "coach123", "王教练", "金牌教练"),
-        ]:
+            db.session.commit()
+            print("[_ensure_db] Created admin")
+    except Exception as e:
+        db.session.rollback()
+        print(f"[_ensure_db] Admin seed failed: {e}")
+
+    # Demo coaches
+    for uname, pwd, dname, title in [
+        ("coach1", "coach123", "李教练", "高级教练"),
+        ("coach2", "coach123", "王教练", "金牌教练"),
+    ]:
+        try:
             u = User.query.filter_by(username=uname).first()
             if not u:
                 u = User(username=uname, role="coach", display_name=dname)
@@ -49,10 +69,15 @@ def _ensure_db(app_obj) -> None:
                 db.session.flush()
             if not Coach.query.filter_by(user_id=u.id).first():
                 db.session.add(Coach(user_id=u.id, title=title))
-        db.session.commit()
-        _db_initialized = True
-    except Exception:
-        pass
+            db.session.commit()
+            print(f"[_ensure_db] Created {uname}")
+        except Exception as e:
+            db.session.rollback()
+            print(f"[_ensure_db] {uname} seed failed: {e}")
+            traceback.print_exc()
+
+    _db_initialized = True
+    print("[_ensure_db] All seeds complete")
 
 def create_app() -> Flask:
     """工厂函数：创建并配置 Flask 应用"""
