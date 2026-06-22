@@ -1,260 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Table, Button, Tag, Empty, Skeleton, Alert } from 'antd';
-import { ScheduleOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ScheduleOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import apiClient from '../api/client';
-import type { Athlete, Assessment } from '../api/athletes';
 
 const { Title, Text } = Typography;
 
-interface AthleteWithAssessment extends Athlete {
-  latest_assessment?: Assessment;
+interface AthRow {
+  id: number; name: string; current_client_type: string; source: string;
+  assessment_count: number;
 }
 
+const typeColor: Record<string, string> = { A:'green',B:'blue',C:'purple',D:'orange',E:'cyan',F:'default' };
+const typeLabel: Record<string, string> = { A:'备赛型',B:'观望型',C:'减脂型',D:'专项型',E:'低频型',F:'低意向' };
+
 const Training: React.FC = () => {
-  const [athletes, setAthletes] = useState<AthleteWithAssessment[]>([]);
+  const [rows, setRows] = useState<AthRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+    (async () => {
       try {
-        const res = await apiClient.get<{ data: Athlete[] }>('/athletes', {
-          params: { per_page: 50 },
-        });
-        const athleteList = res.data.data ?? [];
-
-        // Fetch latest assessment for each athlete
-        const withAssessments = await Promise.all(
-          athleteList.map(async (athlete) => {
-            try {
-              const assessmentRes = await apiClient.get<{ data: Assessment[] }>(
-                `/athletes/${athlete.id}/assessments`,
-                { params: { per_page: 1 } }
-              );
-              const assessments = assessmentRes.data.data ?? [];
-              return {
-                ...athlete,
-                latest_assessment: assessments.length > 0 ? assessments[0] : undefined,
-              };
-            } catch {
-              return { ...athlete, latest_assessment: undefined };
-            }
-          })
-        );
-        setAthletes(withAssessments);
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : '学员数据加载失败';
-        setError(msg);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+        const res = await apiClient.get('/athletes', { params: { per_page: 50 } });
+        const data = res.data;
+        const items: any[] = data.items || data.data || [];
+        setRows(items.map((a: any) => ({
+          id: a.id, name: a.name, current_client_type: a.current_client_type || '',
+          source: a.source || '', assessment_count: a.assessment_count || 0,
+        })));
+      } catch (e: any) { setError(e?.message || '加载失败'); }
+      finally { setLoading(false); }
+    })();
   }, []);
 
-  const columns: ColumnsType<AthleteWithAssessment> = [
-    {
-      title: '学员姓名',
-      dataIndex: 'name',
-      key: 'name',
-      render: (v: string) => (
-        <span style={{ color: '#edf0ef', fontWeight: 500 }}>{v}</span>
-      ),
-    },
-    {
-      title: '客户类型',
-      dataIndex: 'current_client_type',
-      key: 'current_client_type',
-      render: (v: string | null) => (
-        <Tag color={v === '会员' ? 'green' : v === '意向客户' ? 'blue' : 'default'}>
-          {v || '未知'}
-        </Tag>
-      ),
-    },
-    {
-      title: '最近评估',
-      key: 'assessment',
-      render: (_: unknown, record: AthleteWithAssessment) => {
-        if (!record.latest_assessment) {
-          return <Text style={{ color: '#5a6664', fontSize: 12 }}>暂无评估</Text>;
-        }
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Tag
-              color={
-                record.latest_assessment.total_score >= 80
-                  ? 'green'
-                  : record.latest_assessment.total_score >= 60
-                    ? 'blue'
-                    : 'warning'
-              }
-            >
-              {record.latest_assessment.total_score}分
-            </Tag>
-            <Text style={{ color: '#889492', fontSize: 11 }}>
-              {record.latest_assessment.assessment_type}
-            </Text>
-          </div>
-        );
-      },
-    },
-    {
-      title: '来源',
-      dataIndex: 'source',
-      key: 'source',
-      render: (v: string) => (
-        <Text style={{ color: '#889492', fontSize: 12 }}>{v}</Text>
-      ),
-    },
+  const cols: ColumnsType<AthRow> = [
+    { title: '姓名', dataIndex: 'name', render: (v:string) => <span style={{color:'#edf0ef',fontWeight:500}}>{v}</span> },
+    { title: '类型', dataIndex: 'current_client_type', render: (v:string) => <Tag color={typeColor[v]||'default'}>{typeLabel[v]||v||'-'}</Tag> },
+    { title: '来源', dataIndex: 'source', render: (v:string) => <Text style={{color:'#889492'}}>{v||'-'}</Text> },
+    { title: '评估次数', dataIndex: 'assessment_count', render: (v:number) => <Text style={{color:'#889492'}}>{v}</Text> },
   ];
 
-  if (loading) {
-    return (
-      <div>
-        <Title level={4} style={{ color: '#edf0ef', marginBottom: 24, fontWeight: 600 }}>
-          训练计划
-        </Title>
-        <Card
-          bordered={false}
-          style={{
-            background: '#111818',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: 12,
-            marginBottom: 16,
-          }}
-        >
-          <Skeleton active paragraph={{ rows: 1 }} />
-        </Card>
-        <Card
-          bordered={false}
-          style={{
-            background: '#111818',
-            border: '1px solid rgba(255,255,255,0.06)',
-            borderRadius: 12,
-          }}
-        >
-          <Skeleton active paragraph={{ rows: 6 }} />
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <Title level={4} style={{ color: '#edf0ef', marginBottom: 24, fontWeight: 600 }}>
-          训练计划
-        </Title>
-        <Alert
-          type="error"
-          message="加载失败"
-          description={error}
-          showIcon
-          style={{ marginBottom: 16 }}
-        />
-      </div>
-    );
-  }
+  if (loading) return <div><Title level={4} style={{color:'#edf0ef'}}>训练计划</Title><Skeleton active /></div>;
+  if (error) return <div><Title level={4} style={{color:'#edf0ef'}}>训练计划</Title><Alert type="error" message={error} /></div>;
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 24,
-        }}
-      >
-        <Title level={4} style={{ color: '#edf0ef', fontWeight: 600, margin: 0 }}>
-          训练计划
-        </Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          disabled
-          style={{
-            fontWeight: 600,
-            fontSize: 12,
-            borderRadius: 6,
-            height: 32,
-          }}
-        >
-          创建训练计划
-        </Button>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+        <Title level={4} style={{color:'#edf0ef',fontWeight:600,margin:0}}>训练计划</Title>
+        <Button type="primary" icon={<PlusOutlined />} disabled>创建训练计划</Button>
       </div>
-
-      {/* Placeholder card */}
-      <Card
-        bordered={false}
-        style={{
-          background: '#111818',
-          border: `1px solid rgba(160,192,64,0.25)`,
-          borderRadius: 12,
-          marginBottom: 24,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            color: '#a0c040',
-          }}
-        >
-          <ScheduleOutlined style={{ fontSize: 20 }} />
+      <Card bordered={false} style={{background:'#111818',border:'1px solid rgba(160,192,64,0.25)',borderRadius:12,marginBottom:24}}>
+        <div style={{display:'flex',alignItems:'center',gap:12,color:'#a0c040'}}>
+          <ScheduleOutlined style={{fontSize:20}} />
           <div>
-            <Text style={{ color: '#edf0ef', fontSize: 14, fontWeight: 600 }}>
-              训练计划功能开发中
-            </Text>
-            <br />
-            <Text style={{ color: '#5a6664', fontSize: 12 }}>
-              即将支持为学员创建个性化训练计划，敬请期待。
-            </Text>
+            <Text style={{color:'#edf0ef',fontSize:14,fontWeight:600}}>训练计划功能开发中</Text>
+            <br/><Text style={{color:'#5a6664',fontSize:12}}>即将支持为学员创建个性化训练计划，敬请期待。</Text>
           </div>
         </div>
       </Card>
-
-      {/* Athlete list */}
-      <Card
-        bordered={false}
-        style={{
-          background: '#111818',
-          border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: 12,
-        }}
-        title={
-          <span style={{ color: '#edf0ef', fontSize: 14, fontWeight: 600 }}>
-            学员训练状态
-          </span>
-        }
-      >
-        {athletes.length === 0 ? (
-          <Empty description={<span style={{ color: '#5a6664' }}>暂无学员数据</span>} />
-        ) : (
-          <Table
-            dataSource={athletes}
-            columns={columns}
-            rowKey="id"
-            pagination={{ pageSize: 10, size: 'small' }}
-            size="middle"
-            locale={{
-              emptyText: (
-                <span style={{ color: '#5a6664' }}>
-                  <ExclamationCircleOutlined style={{ marginRight: 4 }} />
-                  暂无学员数据
-                </span>
-              ),
-            }}
-          />
-        )}
+      <Card bordered={false} style={{background:'#111818',border:'1px solid rgba(255,255,255,0.06)',borderRadius:12}}
+        title={<span style={{color:'#edf0ef',fontSize:14,fontWeight:600}}>学员训练状态</span>}>
+        {rows.length === 0 ? <Empty description="暂无学员" /> :
+          <Table dataSource={rows} columns={cols} rowKey="id" pagination={{pageSize:10}} size="middle" />}
       </Card>
     </div>
   );
 };
-
 export default Training;
