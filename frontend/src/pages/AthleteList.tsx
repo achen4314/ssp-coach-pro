@@ -84,7 +84,7 @@ const AthleteList: React.FC = () => {
 
     try {
       const res = await athletesApi.list(params);
-      setAthletes(res.data.data || []);
+      setAthletes(res.data.items || res.data.data || []);
       setTotal(res.data.total || 0);
     } catch {
       setError('加载学员列表失败，请检查网络后重试');

@@ -12,6 +12,9 @@ const AthleteList = lazy(() => import('./pages/AthleteList'));
 const AthleteDetail = lazy(() => import('./pages/AthleteDetail'));
 const AssessmentForm = lazy(() => import('./pages/AssessmentForm'));
 const SalesPipeline = lazy(() => import('./pages/SalesPipeline'));
+const Training = lazy(() => import('./pages/Training'));
+const Reports = lazy(() => import('./pages/Reports'));
+const AIAssistant = lazy(() => import('./pages/AIAssistant'));
 
 const PageLoader = () => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
@@ -37,6 +40,9 @@ function App() {
             <Route path="/athletes/:id" element={<Suspense fallback={<PageLoader />}><AthleteDetail /></Suspense>} />
             <Route path="/assessments/new" element={<Suspense fallback={<PageLoader />}><AssessmentForm /></Suspense>} />
             <Route path="/pipeline" element={<Suspense fallback={<PageLoader />}><SalesPipeline /></Suspense>} />
+            <Route path="/training" element={<Suspense fallback={<PageLoader />}><Training /></Suspense>} />
+            <Route path="/reports" element={<Suspense fallback={<PageLoader />}><Reports /></Suspense>} />
+            <Route path="/ai-assistant" element={<Suspense fallback={<PageLoader />}><AIAssistant /></Suspense>} />
           </Route>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

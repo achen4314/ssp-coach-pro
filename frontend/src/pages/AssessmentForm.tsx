@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Typography, Form, Select, DatePicker, Button, Space, Slider,
@@ -77,6 +77,22 @@ const SALES_CHECKBOXES = [
   { key: 'sales_high_intent', label: '高意向标记' },
 ];
 
+// ── 学员信息类型（扩展字段用于选中后展示） ──
+interface AthleteInfo {
+  id: number;
+  name: string;
+  phone: string;
+  gender?: string;
+  source?: string;
+  current_client_type?: string;
+  sport_background?: string;
+  hyrox_interest?: string;
+  birth_date?: string;
+  coach_name?: string;
+  assessment_count?: number;
+  latest_assessment?: unknown;
+}
+
 // ── 样式 ──
 const sectionStyle: React.CSSProperties = {
   background: '#111818',
@@ -126,9 +142,27 @@ const AssessmentForm: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
-  // 学员列表
-  const [athletes, setAthletes] = useState<{ id: number; name: string; phone: string }[]>([]);
-  const [athletesLoading, setAthletesLoading] = useState(false);
+  // ── 学员信息类型（扩展字段用于选中后展示） ──
+  interface AthleteInfo {
+    id: number;
+    name: string;
+    phone: string;
+    gender?: string;
+    source?: string;
+    current_client_type?: string;
+    sport_background?: string;
+    hyrox_interest?: string;
+    birth_date?: string;
+    coach_name?: string;
+    assessment_count?: number;
+    latest_assessment?: unknown;
+  }
+
+    // 学员列表
+    const [athletes, setAthletes] = useState<AthleteInfo[]>([]);
+    const [athletesLoading, setAthletesLoading] = useState(false);
+
+    // 搜索防抖 Timer
 
   // 提交状态
   const [saving, setSaving] = useState(false);
@@ -147,6 +181,9 @@ const AssessmentForm: React.FC = () => {
   // 实时总分
   const [liveScores, setLiveScores] = useState<Record<string, number>>({});
 
+  // 监听选中学员
+  const watchedAthleteId: number | undefined = Form.useWatch('athlete_id', form);
+
   // ── 加载学员列表 ──
   const fetchAthletes = useCallback(async (search?: string) => {
     setAthletesLoading(true);
@@ -154,8 +191,9 @@ const AssessmentForm: React.FC = () => {
       const params: Record<string, unknown> = { per_page: 200 };
       if (search?.trim()) params.name = search.trim();
       const res = await apiClient.get('/athletes', { params });
-      const data = res.data?.data || res.data?.athletes || [];
-      setAthletes(Array.isArray(data) ? data : []);
+      // API 返回 {"items": [...], "total": N}，兼容 data/athletes 旧格式
+      const items = res.data?.items || res.data?.data || res.data?.athletes || [];
+      setAthletes(Array.isArray(items) ? items : []);
     } catch {
       message.error('加载学员列表失败');
       setAthletes([]);
@@ -166,10 +204,29 @@ const AssessmentForm: React.FC = () => {
 
   useEffect(() => { fetchAthletes(); }, [fetchAthletes]);
 
-  // ── 处理学员搜索 ──
+  // ── 处理学员搜索（300ms 防抖） ──
   const handleAthleteSearch = (value: string) => {
-    if (value.length >= 1) fetchAthletes(value);
+    if (searchTimerRef.current) {
+      clearTimeout(searchTimerRef.current);
+    }
+    searchTimerRef.current = setTimeout(() => {
+      fetchAthletes(value || undefined);
+    }, 300);
   };
+
+  // ── 处理学员下拉框获得焦点 ──
+  const handleAthleteFocus = () => {
+    // 如果列表为空或尚未加载过，自动加载
+    if (athletes.length === 0 && !athletesLoading) {
+      fetchAthletes();
+    }
+  };
+
+  // ── 选中学员信息 ──
+  const selectedAthlete = useMemo(() => {
+    if (!watchedAthleteId) return null;
+    return athletes.find(a => a.id === watchedAthleteId) || null;
+  }, [watchedAthleteId, athletes]);
 
   // ── 监听所有维度评分实时变化 ──
   const handleScoreChange = useCallback((dim: string, value: number) => {
@@ -337,6 +394,7 @@ const AssessmentForm: React.FC = () => {
                   placeholder="搜索并选择学员"
                   filterOption={false}
                   onSearch={handleAthleteSearch}
+                  onFocus={handleAthleteFocus}
                   loading={athletesLoading}
                   notFoundContent={athletesLoading ? <Spin size="small" /> : '无匹配学员'}
                   options={athletes.map(a => ({
@@ -345,6 +403,45 @@ const AssessmentForm: React.FC = () => {
                   }))}
                 />
               </Form.Item>
+              {/* 选中学员信息卡片 */}
+              {selectedAthlete && (
+                <div
+                  style={{
+                    marginTop: -8,
+                    marginBottom: 16,
+                    padding: '8px 12px',
+                    background: 'rgba(160,192,64,0.06)',
+                    border: '1px solid rgba(160,192,64,0.15)',
+                    borderRadius: 8,
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 8,
+                    alignItems: 'center',
+                  }}
+                >
+                  <Tag color="green" style={{ margin: 0, fontSize: 12 }}>
+                    {selectedAthlete.current_client_type
+                      ? `${selectedAthlete.current_client_type}类 · ${CLIENT_TYPES[selectedAthlete.current_client_type] || selectedAthlete.current_client_type}`
+                      : '未分型'}
+                  </Tag>
+                  {selectedAthlete.source && (
+                    <Tag color="blue" style={{ margin: 0, fontSize: 12 }}>{selectedAthlete.source}</Tag>
+                  )}
+                  {selectedAthlete.gender && (
+                    <Text style={{ color: '#889492', fontSize: 12 }}>{selectedAthlete.gender}</Text>
+                  )}
+                  {selectedAthlete.assessment_count !== undefined && (
+                    <Text style={{ color: '#5a6664', fontSize: 11 }}>
+                      已有 {selectedAthlete.assessment_count} 次评估
+                    </Text>
+                  )}
+                  {selectedAthlete.coach_name && (
+                    <Text style={{ color: '#5a6664', fontSize: 11 }}>
+                      教练: {selectedAthlete.coach_name}
+                    </Text>
+                  )}
+                </div>
+              )}
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item
