@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, Typography, Input, Button, Tag, Spin } from 'antd';
 import { RobotOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
-import apiClient from '../api/client';
+
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -32,13 +32,23 @@ const AIAssistant: React.FC = () => {
 
     try {
       const history = msgs.map(m => ({role:m.role,content:m.content}));
-      const res = await apiClient.post('/ai/coach-chat', {
-        message: text,
-        history: [...history, {role:'user',content:text}],
-      }, { responseType: 'stream', signal: ctrl.signal, timeout: 0 });
+      const token = localStorage.getItem('auth-token');
+      const response = await fetch('/api/v1/ai/coach-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: 'Bearer ' + token } : {}),
+        },
+        body: JSON.stringify({
+          message: text,
+          history: [...history, {role:'user',content:text}],
+        }),
+        signal: ctrl.signal,
+      });
 
-      const stream = res.data as ReadableStream;
-      const reader = stream.getReader();
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('无法读取响应流');
       const dec = new TextDecoder();
       let full = '';
       while (true) {
