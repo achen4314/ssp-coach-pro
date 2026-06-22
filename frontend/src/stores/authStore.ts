@@ -39,9 +39,10 @@ export const useAuthStore = create<AuthState>()(
             username,
             password,
           });
-          const { access_token, user } = response.data;
+          const { token, user } = response.data;
+          localStorage.setItem('auth-token', token);
           set({
-            token: access_token,
+            token: token,
             user,
             isAuthenticated: true,
             loginLoading: false,

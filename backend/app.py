@@ -33,22 +33,26 @@ def _ensure_db(app_obj) -> None:
             admin = User(username="admin", role="admin", display_name="总教练")
             admin.set_password("admin123")
             db.session.add(admin)
-        if not Coach.query.first():
-            # Create demo coaches
-            for uname, pwd, dname, title in [
-                ("coach1", "coach123", "李教练", "高级教练"),
-                ("coach2", "coach123", "王教练", "金牌教练"),
-            ]:
+            db.session.flush()
+            if not Coach.query.filter_by(user_id=admin.id).first():
+                db.session.add(Coach(user_id=admin.id, title="总教练"))
+        # Always ensure demo coaches exist
+        for uname, pwd, dname, title in [
+            ("coach1", "coach123", "李教练", "高级教练"),
+            ("coach2", "coach123", "王教练", "金牌教练"),
+        ]:
+            u = User.query.filter_by(username=uname).first()
+            if not u:
                 u = User(username=uname, role="coach", display_name=dname)
                 u.set_password(pwd)
                 db.session.add(u)
                 db.session.flush()
+            if not Coach.query.filter_by(user_id=u.id).first():
                 db.session.add(Coach(user_id=u.id, title=title))
         db.session.commit()
         _db_initialized = True
     except Exception:
-        pass  # gunicorn import时可能无context, 由before_request兜底
-
+        pass
 
 def create_app() -> Flask:
     """工厂函数：创建并配置 Flask 应用"""
