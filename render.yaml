@@ -1,0 +1,28 @@
+# SSP COACH PRO — Render 部署配置
+# 一键部署: https://render.com/deploy?repo=https://github.com/achen4314/ssp-coach-pro
+
+services:
+  # ── Flask API + 前端静态托管 (单服务) ──
+  - type: web
+    name: ssp-coach-pro
+    env: python
+    region: singapore
+    buildCommand: |
+      pip install -r backend/requirements.txt
+      cd frontend && npm install && npm run build
+      cd ..
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    plan: free
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com/v1
+      - key: DEEPSEEK_MODEL
+        value: deepseek-chat
+      - key: PYTHON_VERSION
+        value: "3.11"

@@ -87,6 +87,24 @@ def create_app() -> Flask:
     def health():
         return jsonify({"status": "ok", "service": "SSP COACH PRO"})
 
+    # ── 生产环境：托管前端静态文件 ──
+    import os as _os
+    _frontend_dist = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "frontend", "dist")
+    if _os.path.exists(_frontend_dist):
+        from flask import send_from_directory
+
+        @app.route("/")
+        @app.route("/<path:path>")
+        def serve_frontend(path="index.html"):
+            if path.startswith("api/"):
+                return jsonify({"error": "Not Found"}), 404
+            if "." not in path and not path.startswith("assets"):
+                path = "index.html"
+            file_path = _os.path.join(_frontend_dist, path)
+            if _os.path.isfile(file_path):
+                return send_from_directory(_frontend_dist, path)
+            return send_from_directory(_frontend_dist, "index.html")
+
     return app
 
 
