@@ -77,23 +77,6 @@ const SALES_CHECKBOXES = [
   { key: 'sales_high_intent', label: '高意向标记' },
 ];
 
-// ── 学员信息类型（扩展字段用于选中后展示） ──
-interface AthleteInfo {
-  id: number;
-  name: string;
-  phone: string;
-  gender?: string;
-  source?: string;
-  current_client_type?: string;
-  sport_background?: string;
-  hyrox_interest?: string;
-  birth_date?: string;
-  coach_name?: string;
-  assessment_count?: number;
-  latest_assessment?: unknown;
-}
-
-// ── 样式 ──
 const sectionStyle: React.CSSProperties = {
   background: '#111818',
   border: '1px solid rgba(255,255,255,0.06)',
@@ -163,7 +146,7 @@ const AssessmentForm: React.FC = () => {
     const [athletesLoading, setAthletesLoading] = useState(false);
 
     // 搜索防抖 Timer
-
+    const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 提交状态
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
