@@ -1,5 +1,4 @@
 import { lazy, Suspense } from 'react';
-import { lazy, Suspense } from 'react';
 import { ConfigProvider, Spin } from 'antd';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import zhCN from 'antd/locale/zh_CN';
@@ -14,17 +13,6 @@ const AthleteDetail = lazy(() => import('./pages/AthleteDetail'));
 const AssessmentForm = lazy(() => import('./pages/AssessmentForm'));
 const SalesPipeline = lazy(() => import('./pages/SalesPipeline'));
 
-const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-    <Spin size="large" />
-  </div>
-);
-const AthleteList = lazy(() => import('./pages/AthleteList'));
-const AthleteDetail = lazy(() => import('./pages/AthleteDetail'));
-const AssessmentForm = lazy(() => import('./pages/AssessmentForm'));
-const SalesPipeline = lazy(() => import('./pages/SalesPipeline'));
-
-// 加载占位
 const PageLoader = () => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
     <Spin size="large" />
