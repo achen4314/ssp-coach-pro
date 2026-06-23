@@ -1,0 +1,42 @@
+{
+  "name": "ssp-coach-mini",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SSP教练平台微信小程序",
+  "templateInfo": {
+    "name": "react-ts",
+    "typescript": true,
+    "css": "sass"
+  },
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "npm run build:weapp -- --watch"
+  },
+  "browserslist": [
+    "last 3 versions",
+    "Android >= 4.1",
+    "ios >= 8"
+  ],
+  "author": "",
+  "dependencies": {
+    "@tarojs/components": "^3.6.0",
+    "@tarojs/helper": "^3.6.0",
+    "@tarojs/plugin-platform-weapp": "^3.6.0",
+    "@tarojs/react": "^3.6.0",
+    "@tarojs/runtime": "^3.6.0",
+    "@tarojs/shared": "^3.6.0",
+    "@tarojs/taro": "^3.6.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.0",
+    "@tarojs/cli": "^3.6.0",
+    "@tarojs/mini-runner": "^3.6.0",
+    "@tarojs/webpack5-runner": "^3.6.0",
+    "@types/react": "^18.0.0",
+    "babel-preset-taro": "^3.6.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.78.0"
+  }
+}

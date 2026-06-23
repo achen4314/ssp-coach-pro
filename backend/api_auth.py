@@ -36,6 +36,12 @@ def _auto_seed_users():
         db.session.rollback()
         print(f"[auto_seed] Failed: {e}")
 
+import requests
+
+_wx_config = {
+    "appid": "wx47ce780b338d6740",
+    "secret": "7e40721a3b8ccc90aee0700aeb2708b4",
+}
 
 # ────────────────────────── POST /login ──────────────────────────
 @api_auth_bp.route("/login", methods=["POST"])
@@ -156,3 +162,58 @@ def register():
         "token": access_token,
         "user": user.to_dict(),
     }), 201
+
+
+# ────────────────────────── POST /wx-login ──────────────────────────
+@api_auth_bp.route("/wx-login", methods=["POST"])
+def wx_login():
+    """微信小程序登录：code换取openid，自动创建/绑定用户"""
+    data = request.get_json(silent=True) or {}
+    code = (data.get("code") or "").strip()
+    if not code:
+        return jsonify({"error": "缺少code"}), 400
+
+    # 调用微信接口换取openid
+    try:
+        wx_resp = requests.get(
+            "https://api.weixin.qq.com/sns/jscode2session",
+            params={
+                "appid": _wx_config["appid"],
+                "secret": _wx_config["secret"],
+                "js_code": code,
+                "grant_type": "authorization_code",
+            },
+            timeout=10,
+        )
+        wx_data = wx_resp.json()
+    except Exception as e:
+        return jsonify({"error": f"微信接口调用失败: {str(e)}"}), 502
+
+    openid = wx_data.get("openid")
+    if not openid:
+        return jsonify({"error": wx_data.get("errmsg", "获取openid失败")}), 400
+
+    # 查找或创建用户
+    username = f"wx_{openid[:12]}"
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        user = User(
+            username=username,
+            role="athlete",  # 小程序用户默认athlete角色
+            display_name=data.get("nickname", f"用户{openid[-6:]}"),
+        )
+        user.set_password(openid)  # 用openid做密码（不会直接使用）
+        db.session.add(user)
+        db.session.flush()
+
+    # 生成JWT
+    access_token = create_access_token(
+        identity=str(user.id),
+        additional_claims={"role": user.role, "display_name": user.display_name},
+    )
+
+    return jsonify({
+        "token": access_token,
+        "user": user.to_dict(),
+        "openid": openid,
+    })
