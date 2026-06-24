@@ -3,6 +3,7 @@ export default {
     'pages/login/index',
     'pages/dashboard/index',
     'pages/athletes/index',
+    'pages/detail/index',
     'pages/assessment/index',
   ],
   window: {

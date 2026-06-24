@@ -38,7 +38,7 @@ export default function Athletes() {
       <ScrollView style={{ flex: 1, padding: '0 12px' }} scrollY
         refresherEnabled onRefresherRefresh={() => fetchList(search)} refresherTriggered={loading}>
         {list.map((a: any, i: number) => (
-          <View key={i} onClick={() => Taro.showToast({ title: a.name, icon: 'none' })}
+          <View key={i} onClick={() => Taro.navigateTo({ url: '/pages/detail/index?id=' + a.id })}
             style={{ background: card, border, borderRadius: 10, padding: 14, marginBottom: 8 }}>
             <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <View>
