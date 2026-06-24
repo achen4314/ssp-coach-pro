@@ -17,24 +17,9 @@ export default {
     backgroundColor: '#111818',
     borderStyle: 'black',
     list: [
-      {
-        pagePath: 'pages/dashboard/index',
-        text: '工作台',
-        iconPath: 'assets/tab/dashboard.png',
-        selectedIconPath: 'assets/tab/dashboard-active.png',
-      },
-      {
-        pagePath: 'pages/athletes/index',
-        text: '学员',
-        iconPath: 'assets/tab/athletes.png',
-        selectedIconPath: 'assets/tab/athletes-active.png',
-      },
-      {
-        pagePath: 'pages/assessment/index',
-        text: '评估',
-        iconPath: 'assets/tab/assessment.png',
-        selectedIconPath: 'assets/tab/assessment-active.png',
-      },
+      { pagePath: 'pages/dashboard/index', text: '工作台' },
+      { pagePath: 'pages/athletes/index', text: '学员' },
+      { pagePath: 'pages/assessment/index', text: '评估' },
     ],
   },
   style: 'v2',
