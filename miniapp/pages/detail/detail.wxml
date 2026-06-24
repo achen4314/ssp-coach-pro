@@ -1,0 +1,13 @@
+<view class="p-12">
+  <view class="card">
+    <text class="n">{{a.name}}</text>
+    <text class="m">{{a.gender||''}} · {{a.age||''}}岁 · {{a.source||''}}</text>
+  </view>
+  <view class="card" wx:if="{{assessments.length>0}}">
+    <text class="t">评估记录</text>
+    <view wx:for="{{assessments}}" wx:key="id" class="ar">
+      <text>{{item.assessment_date}}</text>
+      <text class="s">{{item.total_score}}/50</text>
+    </view>
+  </view>
+</view>

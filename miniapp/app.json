@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/dashboard/dashboard",
+    "pages/athletes/athletes",
+    "pages/detail/detail",
+    "pages/assessment/assessment"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#204040",
+    "navigationBarTitleText": "SSP教练",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0a0f0f"
+  },
+  "style": "v2"
+}

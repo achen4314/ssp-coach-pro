@@ -1,0 +1,5 @@
+<view class="container">
+  <view class="logo">SSP COACH</view>
+  <view class="sub">铁牛运动表现 · 教练平台</view>
+  <button class="login-btn" bindtap="handleLogin">微信一键登录</button>
+</view>

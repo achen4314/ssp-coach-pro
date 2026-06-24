@@ -1,0 +1,10 @@
+<view class="p-12">
+  <input class="search" placeholder="搜索学员…" bindconfirm="onSearch"/>
+  <view wx:for="{{list}}" wx:key="id" class="row" bindtap="goDetail" data-id="{{item.id}}">
+    <view>
+      <text class="name">{{item.name}}</text>
+      <text class="src">{{item.source||''}}</text>
+    </view>
+    <text class="type">{{item.current_client_type||'-'}}</text>
+  </view>
+</view>

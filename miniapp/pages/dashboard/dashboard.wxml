@@ -1,0 +1,24 @@
+<view class="p-12">
+  <view class="stats">
+    <view class="scard" wx:for="{{[{l:'总学员',v:stats.total_athletes||0,c:'#a0c040'},{l:'本月评估',v:(stats.assessments_this_month||0)+'/'+(stats.assessments_target||50),c:'#3b82f6'},{l:'待跟进',v:stats.pending_followups||0,c:'#f5a623'},{l:'成交率',v:(stats.conversion_rate_this_month||0)+'%',c:'#8b5cf6'}]}}" wx:key="l">
+      <text class="slabel">{{item.l}}</text>
+      <text class="sval">{{item.v}}</text>
+      <view class="sb" style="background:{{item.c}}"></view>
+    </view>
+  </view>
+  <view class="card">
+    <text class="title">销售漏斗</text>
+    <view wx:for="{{funnel}}" wx:key="stage" class="frow">
+      <text class="flabel">{{item.stage}}</text>
+      <view class="fbar"><view class="fb" style="width:{{item.pct}}%"></view></view>
+      <text class="fnum">{{item.count}}人</text>
+    </view>
+  </view>
+  <view class="card">
+    <text class="title">最近学员</text>
+    <view wx:for="{{athletes}}" wx:key="id" class="arow">
+      <text>{{item.name}}</text>
+      <text class="asrc">{{item.source||''}}</text>
+    </view>
+  </view>
+</view>
