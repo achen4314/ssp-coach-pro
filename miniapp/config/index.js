@@ -9,9 +9,12 @@ const config = {
   defineConstants: {},
   copy: { patterns: [], options: {} },
   framework: 'react',
-  compiler: 'webpack5',
+  compiler: { type: 'webpack5' },
   cache: { enable: false },
   mini: {
+    webpackChain(chain) {
+      chain.plugins.delete('progress');
+    },
     postcss: {
       pxtransform: { enable: true, config: {} },
       url: { enable: true, config: { limit: 1024 } },
@@ -21,10 +24,6 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
-    postcss: {
-      autoprefixer: { enable: true, config: {} },
-      cssModules: { enable: false, config: { namingPattern: 'module', generateScopedName: '[name]__[local]___[hash:base64:5]' } },
-    },
   },
 };
 
